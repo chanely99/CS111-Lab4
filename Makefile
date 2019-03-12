@@ -3,8 +3,8 @@
 #UID: 604914166
 
 default: 
-	gcc -Wall -Wextra -g -o lab4b lab4b.c
+	gcc -g -Wall -Wextra -lmraa -lm -UDUMMY lab4b.c -o lab4b
 clean: 
 	rm -rf lab4b lab4b-604914166.tar.gz
-dis: 
-	tar -cvzf lab3a-604914166.tar.gz lab4b.c README Makefile
+dist: 
+	tar -cvzf lab4b-604914166.tar.gz lab4b.c README Makefile

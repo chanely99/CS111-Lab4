@@ -3,27 +3,20 @@ Name: Chanel Young
 UID: 604914166
 EMAIL: chanelyoung99@gmail.com
 */
-/*
-Using poll: https://linux.die.net/man/3/poll
-printing the string correctly: https://stackoverflow.com/questions/8345581/c-printf-a-float-value
-
-*/
 
 #include <unistd.h>
 #include <stdio.h>
 #include <getopt.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <string.h>
+#include <math.h>
+#include <mraa.h>
+#include <mraa/aio.h>
 #include <poll.h>
 #include <time.h>
-#include <math.h>
-#include <fcntl.h>
-#include <stdlib.h>
+#include <sys/time.h>
 #include <ctype.h>
-#include <mraa.h>
-#include <aio.h>
-#include <stdbool.h>
+#include "fcntl.h"
 
 bool log = false; 
 int logfd; 

@@ -1,0 +1,17 @@
+NAME: Chanel Young
+EMAIL: chanelyoung99@gmail.com
+UID: 604914166
+
+README: my readme
+
+Makefile: makefile with default to build lab4b from lab4b.c, dist to make the tarball, and clean to get rid of any files you made
+
+lab4b.c: C program that outputs the temperature data for the temperature sensor attached to the beaglebone.
+
+Sources: 
+Using poll: https://linux.die.net/man/3/poll
+
+printing the string correctly: https://stackoverflow.com/questions/8345581/c-printf-a-float-value
+
+
+
