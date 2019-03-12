@@ -32,11 +32,11 @@ int period = 1;
 int stopped = 0; 
 
 double readingToTemp(int reading, char unit){
-	//took these lines from Alexander Tiard's slides
+	//copied these lines from Alexander Tiard's slides
 	double r = 1023.0/reading - 1.0; 
 	r = 100000*r; 
 	int B = 4275; 
-	double temp = 1.0/(log(temp/100000.0)/B + 1/298.15) - 273.15;
+	double temp = 1.0/(log(r/100000.0)/B + 1/298.15) - 273.15;
 	if(unit == 'F')
 		temp = temp*1.8 + 32; 
 	return temp; 
