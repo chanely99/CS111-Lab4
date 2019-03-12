@@ -3,26 +3,32 @@ Name: Chanel Young
 UID: 604914166
 EMAIL: chanelyoung99@gmail.com
 */
+/*
+Using poll: https://linux.die.net/man/3/poll
+printing the string correctly: https://stackoverflow.com/questions/8345581/c-printf-a-float-value
+
+*/
 
 #include <unistd.h>
 #include <stdio.h>
 #include <getopt.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <string.h>
-#include <math.h>
-#include <mraa.h>
-#include <mraa/aio.h>
 #include <poll.h>
 #include <time.h>
-#include <sys/time.h>
+#include <math.h>
+#include <fcntl.h>
+#include <stdlib.h>
 #include <ctype.h>
-#include "fcntl.h"
+#include <mraa.h>
+#include <aio.h>
 
-bool log = false; 
+int log = 0; 
 int logfd; 
 char unit = 'F'; //fahrenheit by default
 int period = 1; 
-bool stopped = false; 
+int stopped = 0; 
 
 double readingToTemp(int reading, char unit){
 	//took these lines from Alexander Tiard's slides
@@ -36,13 +42,13 @@ double readingToTemp(int reading, char unit){
 }
 void run_command(const char* command){
 	if(strcmp(command, "START") == 0){
-		stopped = false; 
+		stopped = 0; 
 		if(log){
 			dprintf(logfd, "START\n"); 
 		}
 	}
 	else if(strcmp(command, "STOP") == 0){
-		stopped = true; 
+		stopped = 1; 
 		if(log){
 			dprintf(logfd, "STOP\n");
 		}
@@ -116,10 +122,10 @@ int main(int argc, char* argv[]){
 	        period = atoi(optarg);
 	        break;
 	      case 'l':
-	        log = true;
+	        log = 1;
 	        logfd = fopen(optarg, "w");
 	        if(logfd == NULL){
-	        	fprintf("Error opening file %s", optarg)
+	        	fprintf("Error opening file %s", optarg);
 	        	exit(1); 
 	        }
 	        break;
@@ -159,10 +165,9 @@ int main(int argc, char* argv[]){
 		gettimeofday(&clk, 0); 
 		if(!stopped && clk.tv_sec >= next){
 			current_time = localtime(&clk.tv_sec); 
-			sprintf(buf, "%02d:%02d:%02d %.1f\n", current_time->tm_hour, current_time->tm_min, current_time->tm_sec, temp);
+			fprintf(stdout, "%02d:%02d:%02d %.1f\n", current_time->tm_hour, current_time->tm_min, current_time->tm_sec, temp);
 			if(log)
-				fputs(buf, logfile); 
-			fputs(buf, stdout); 
+				dprintf(logfd,  "%02d:%02d:%02d %.1f\n", current_time->tm_hour, current_time->tm_min, current_time->tm_sec, temp);
 			next = clk.tv_sec + period; 
 		}
 
@@ -192,13 +197,9 @@ int main(int argc, char* argv[]){
 					cur_index++; 
 				}
 			}
-
 		}
-
   	}
-
   	mraa_aio_close(sensor); 
   	mraa_gpio_close(button); 
-  	exit(0)
-
+  	exit(0);
 }
