@@ -17,6 +17,7 @@ printing the string correctly: https://stackoverflow.com/questions/8345581/c-pri
 #include <string.h>
 #include <poll.h>
 #include <time.h>
+#include <sys/time.h>
 #include <math.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -24,7 +25,7 @@ printing the string correctly: https://stackoverflow.com/questions/8345581/c-pri
 #include <mraa.h>
 #include <aio.h>
 
-int log = 0; 
+int log_flag = 0; 
 int logfd; 
 char unit = 'F'; //fahrenheit by default
 int period = 1; 
@@ -36,38 +37,38 @@ double readingToTemp(int reading, char unit){
 	r = 100000*r; 
 	int B = 4275; 
 	double temp = 1.0/(log(temp/100000.0)/B + 1/298.15) - 273.15;
-	if(unit == "F")
+	if(unit == 'F')
 		temp = temp*1.8 + 32; 
 	return temp; 
 }
 void run_command(const char* command){
 	if(strcmp(command, "START") == 0){
 		stopped = 0; 
-		if(log){
+		if(log_flag){
 			dprintf(logfd, "START\n"); 
 		}
 	}
 	else if(strcmp(command, "STOP") == 0){
 		stopped = 1; 
-		if(log){
+		if(log_flag){
 			dprintf(logfd, "STOP\n");
 		}
 	}
 	else if(strcmp(command, "SCALE=F") == 0){
 		unit = 'C'; 
-		if(log){
+		if(log_flag){
 			dprintf(logfd, "SCALE=C\n"); 
 		}
 	}
 	else if(strcmp(command, "SCALE=C") == 0){
 		unit = 'C'; 
-		if(log){
+		if(log_flag){
 			dprintf(logfd, "SCALE=C\n"); 
 		}
 	}
 	else if(strcmp(command, "OFF") == 0){
 		fprintf(stdout, "OFF\n"); 
-		if(log){
+		if(log_flag){
 			dprintf(logfd, "OFF\n"); 
 		}
 		time_t raw_time;
@@ -75,18 +76,18 @@ void run_command(const char* command){
 	    time(&raw_time);
 	    cur_time = localtime(&raw_time);
 	    fprintf(stdout, "%.2d:%.2d:%.2d SHUTDOWN\n", cur_time->tm_hour, cur_time->tm_min, cur_time->tm_sec);
-	    if(log) {
+	    if(log_flag) {
 	        dprintf(logfd, "%.2d:%.2d:%.2d SHUTDOWN\n", cur_time->tm_hour, cur_time->tm_min, cur_time->tm_sec);
 	    }
 	    exit(0);
 	}
 	else if(strncmp(command, "PERIOD=", 7) == 0){
 		period = (int)atoi(command + 7);
-		if(log && !stopped)
+		if(log_flag && !stopped)
 			dprintf(logfd, "%s\n", command);
 	}
 	else if(strncmp(command, "LOG", 3) == 0){
-		if(log){
+		if(log_flag){
 			dprintf(logfd, "%s\n", command); 
 		}
 	}
@@ -106,7 +107,7 @@ int main(int argc, char* argv[]){
       {0, 0, 0, 0}
     };
     char arg; 
-    while((arg = getopt_long(argc, argv, "s:p:l", long_options, NULL)) != -1){
+    while((arg = getopt_long(argc, argv, "", long_options, NULL)) != -1){
 	    switch (arg)
 	      {
 	      case 's':
@@ -122,10 +123,10 @@ int main(int argc, char* argv[]){
 	        period = atoi(optarg);
 	        break;
 	      case 'l':
-	        log = 1;
+	        log_flag = 1;
 	        logfd = fopen(optarg, "w");
 	        if(logfd == NULL){
-	        	fprintf("Error opening file %s", optarg);
+	        	fprintf("Error opening file");
 	        	exit(1); 
 	        }
 	        break;
@@ -157,7 +158,6 @@ int main(int argc, char* argv[]){
   	struct timeval clk; 
   	time_t next = 0;
   	struct tm* current_time;
-  	char buf[100];  
   	char input[100]; 
   	while(1){
   		reading =  mraa_aio_read(sensor); 
@@ -166,7 +166,7 @@ int main(int argc, char* argv[]){
 		if(!stopped && clk.tv_sec >= next){
 			current_time = localtime(&clk.tv_sec); 
 			fprintf(stdout, "%02d:%02d:%02d %.1f\n", current_time->tm_hour, current_time->tm_min, current_time->tm_sec, temp);
-			if(log)
+			if(log_flag)
 				dprintf(logfd,  "%02d:%02d:%02d %.1f\n", current_time->tm_hour, current_time->tm_min, current_time->tm_sec, temp);
 			next = clk.tv_sec + period; 
 		}
@@ -178,7 +178,7 @@ int main(int argc, char* argv[]){
 		}
 
 		if(fds[0].revents && POLLIN){
-			bytes_read = read(STDIN_FILENO, input, 100); 
+			int bytes_read = read(STDIN_FILENO, input, 100); 
 			if(bytes_read == -1){
 				fprintf(stderr, "Error reading from stdin\n"); 
 				exit(1); 
