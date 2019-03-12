@@ -42,31 +42,31 @@ double readingToTemp(int reading, char unit){
 	return temp; 
 }
 void run_command(const char* command){
-	if(strcmp(commmand, "START") == 0){
+	if(strcmp(command, "START") == 0){
 		stopped = false; 
 		if(log){
 			dprintf(logfd, "START\n"); 
 		}
 	}
-	else if(strcmp(commmand, "STOP") == 0){
+	else if(strcmp(command, "STOP") == 0){
 		stopped = true; 
 		if(log){
 			dprintf(logfd, "STOP\n");
 		}
 	}
-	else if(strcmp(commmand, "SCALE=F") == 0){
+	else if(strcmp(command, "SCALE=F") == 0){
 		unit = 'C'; 
 		if(log){
 			dprintf(logfd, "SCALE=C\n"); 
 		}
 	}
-	else if(strcmp(commmand, "SCALE=C") == 0){
+	else if(strcmp(command, "SCALE=C") == 0){
 		unit = 'C'; 
 		if(log){
 			dprintf(logfd, "SCALE=C\n"); 
 		}
 	}
-	else if(strcmp(commmand, "OFF") == 0){
+	else if(strcmp(command, "OFF") == 0){
 		fprintf(stdout, "OFF\n"); 
 		if(log){
 			dprintf(logfd, "OFF\n"); 
@@ -81,16 +81,21 @@ void run_command(const char* command){
 	    }
 	    exit(0);
 	}
-	else if(strcmp(commmand, "PERIOD=") == 0){
-		//TODO
+	else if(strcmp(command, "PERIOD=", 7) == 0){
+		period = (int)atoi(command + 7);
+		if(log && !stopped)
+			dprintf(logfd, "%s\n", command)
 	}
-	else if(strcmp(commmand, "LOG") == 0){
-		//TODO
+	else if(strcmp(command, "LOG", 3) == 0){
+		if(log){
+			dprintf(logfd, "%s\n", command); 
+		}
 	}
 	else{
 		fprintf(stderr, "Error, unrecognized command %s", command);
 		exit(1); 
 	}
+		
 
 }
 int main(int argc, char* argv[]){
