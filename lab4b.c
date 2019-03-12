@@ -124,9 +124,9 @@ int main(int argc, char* argv[]){
 	        break;
 	      case 'l':
 	        log_flag = 1;
-	        logfd = fopen(optarg, "w");
-	        if(logfd == NULL){
-	        	fprintf("Error opening file");
+	        logfd = creat(optarg, 0666); 
+	        if(logfd < 0){
+	        	fprintf(stderr, "Error opening file %s\n", optarg);
 	        	exit(1); 
 	        }
 	        break;
@@ -187,8 +187,8 @@ int main(int argc, char* argv[]){
 			int cur_index = 0; 
 			char cur_cmd[128]; 
 			for(; i <  bytes_read && cur_index < 100; i++){
-				if(bytes_read[i] == '\n'){ //end of current command
-					run_command((char*)cur_cmd);
+				if(input[i] == '\n'){ //end of current command
+					run_command((char*)&cur_cmd);
 					cur_index = 0; 
 					memset(cur_cmd, 0, 100); 
 				}
