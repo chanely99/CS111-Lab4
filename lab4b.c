@@ -106,7 +106,7 @@ int main(int argc, char* argv[]){
       {"LOG", required_argument, 0, 'l'},
       {0, 0, 0, 0}
     };
-    char arg; 
+    int arg; 
     while((arg = getopt_long(argc, argv, "", long_options, NULL)) != -1){
 	    switch (arg)
 	      {
