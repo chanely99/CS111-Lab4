@@ -3,7 +3,7 @@
 #UID: 604914166
 
 default: 
-	gcc -g -Wall -Wextra -lmraa -lm -UDUMMY lab4b.c -o lab4b
+	gcc -g -Wall -Wextra -lmraa -lm lab4b.c -o lab4b
 clean: 
 	rm -rf lab4b lab4b-604914166.tar.gz
 dist: 
