@@ -21,7 +21,7 @@ printing the string correctly: https://stackoverflow.com/questions/8345581/c-pri
 #include <fcntl.h>
 #include <stdlib.h>
 #include <ctype.h>
-//#include <mraa.h>
+#include <mraa.h>
 #include <aio.h>
 #include <stdbool.h>
 
@@ -74,19 +74,19 @@ void run_command(const char* command){
 		time_t raw_time;
 	    struct tm* cur_time;
 	    time(&raw_time);
-	    curr_time = localtime(&raw_time);
+	    cur_time = localtime(&raw_time);
 	    fprintf(stdout, "%.2d:%.2d:%.2d SHUTDOWN\n", cur_time->tm_hour, cur_time->tm_min, cur_time->tm_sec);
-	    if(logFlag) {
+	    if(log) {
 	        dprintf(logfd, "%.2d:%.2d:%.2d SHUTDOWN\n", cur_time->tm_hour, cur_time->tm_min, cur_time->tm_sec);
 	    }
 	    exit(0);
 	}
-	else if(strcmp(command, "PERIOD=", 7) == 0){
+	else if(strncmp(command, "PERIOD=", 7) == 0){
 		period = (int)atoi(command + 7);
 		if(log && !stopped)
-			dprintf(logfd, "%s\n", command)
+			dprintf(logfd, "%s\n", command);
 	}
-	else if(strcmp(command, "LOG", 3) == 0){
+	else if(strncmp(command, "LOG", 3) == 0){
 		if(log){
 			dprintf(logfd, "%s\n", command); 
 		}
@@ -106,6 +106,7 @@ int main(int argc, char* argv[]){
       {"LOG", required_argument, 0, 'l'},
       {0, 0, 0, 0}
     };
+    char arg; 
     while((arg = getopt_long(argc, argv, "s:p:l", long_options, NULL)) != -1){
 	    switch (arg)
 	      {
@@ -123,10 +124,9 @@ int main(int argc, char* argv[]){
 	        break;
 	      case 'l':
 	        log = true;
-	        logfile = optarg; 
-	        logfd = fopen(logfile, "w")
+	        logfd = fopen(optarg, "w");
 	        if(logfd == NULL){
-	        	fprintf("Error opening file %s", logfile)
+	        	fprintf("Error opening file %s", optarg)
 	        	exit(1); 
 	        }
 	        break;
@@ -189,7 +189,7 @@ int main(int argc, char* argv[]){
 			int cur_index = 0; 
 			char cur_cmd[128]; 
 			for(; i <  bytes_read && cur_index < 100; i++){
-				if(command[i] == '\n'){ //end of current command
+				if(bytes_read[i] == '\n'){ //end of current command
 					run_command((char*)cur_cmd);
 					cur_index = 0; 
 					memset(cur_cmd, 0, 100); 
