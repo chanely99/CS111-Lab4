@@ -200,6 +200,7 @@ int main(int argc, char* argv[]){
 		}
   	}
   	mraa_aio_close(sensor); 
-  	mraa_gpio_close(button); 
+  	mraa_gpio_close(button); \
+	close(logfd);
   	exit(0);
 }
