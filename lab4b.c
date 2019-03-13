@@ -177,7 +177,7 @@ int main(int argc, char* argv[]){
 			exit(1); 
 		}
 
-		if(fds[0].revents && POLLIN){
+		if(fds[0].revents & POLLIN){
 			int bytes_read = read(STDIN_FILENO, input, 100); 
 			if(bytes_read == -1){
 				fprintf(stderr, "Error reading from stdin\n"); 
