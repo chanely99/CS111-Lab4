@@ -123,8 +123,9 @@ int main(int argc, char* argv[]){
 	        period = atoi(optarg);
 	        break;
 	      case 'l':
+		printf("its loggin time");
 	        log_flag = 1;
-	        logfd = creat(optarg, 0666); 
+	        logfd = fopen(optarg, O_WRONLY); 
 	        if(logfd < 0){
 	        	fprintf(stderr, "Error opening file %s\n", optarg);
 	        	exit(1); 
