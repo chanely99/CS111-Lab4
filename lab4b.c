@@ -124,12 +124,13 @@ int main(int argc, char* argv[]){
 	        break;
 	      case 'l':
 		printf("its loggin time");
-	        log_flag = 1;
-	        logfd = fopen(optarg, O_WRONLY); 
-	        if(logfd < 0){
+		FILE* log_ptr = NULL;
+		log_ptr = fopen(optarg, "w");
+	        if(log_ptr == NULL){
 	        	fprintf(stderr, "Error opening file %s\n", optarg);
 	        	exit(1); 
 	        }
+		logfd = fileno(log_ptr); 
 	        break;
 	      case '?':
 	        fprintf(stderr, "Invalid argument %s", optarg);
