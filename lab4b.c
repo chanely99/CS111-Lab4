@@ -123,7 +123,7 @@ int main(int argc, char* argv[]){
 	        period = atoi(optarg);
 	        break;
 	      case 'l':
-		printf("its loggin time");
+		//printf("its loggin time");
 		FILE* log_ptr = NULL;
 		log_ptr = fopen(optarg, "w");
 	        if(log_ptr == NULL){
@@ -132,7 +132,7 @@ int main(int argc, char* argv[]){
 	        }
 		log_flag = 1; 
 		logfd = fileno(log_ptr);
-		printf("logfd is %d", logfd);
+		//printf("logfd is %d", logfd);
 	        break;
 	      case '?':
 	        fprintf(stderr, "Invalid argument %s", optarg);
