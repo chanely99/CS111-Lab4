@@ -130,6 +130,7 @@ int main(int argc, char* argv[]){
 	        	fprintf(stderr, "Error opening file %s\n", optarg);
 	        	exit(1); 
 	        }
+		log_flag = 1; 
 		logfd = fileno(log_ptr);
 		printf("logfd is %d", logfd);
 	        break;
