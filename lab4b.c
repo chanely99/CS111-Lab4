@@ -130,7 +130,8 @@ int main(int argc, char* argv[]){
 	        	fprintf(stderr, "Error opening file %s\n", optarg);
 	        	exit(1); 
 	        }
-		logfd = fileno(log_ptr); 
+		logfd = fileno(log_ptr);
+		printf("logfd is %s", logfd);
 	        break;
 	      case '?':
 	        fprintf(stderr, "Invalid argument %s", optarg);
