@@ -131,7 +131,7 @@ int main(int argc, char* argv[]){
 	        	exit(1); 
 	        }
 		logfd = fileno(log_ptr);
-		printf("logfd is %s", logfd);
+		printf("logfd is %d", logfd);
 	        break;
 	      case '?':
 	        fprintf(stderr, "Invalid argument %s", optarg);
