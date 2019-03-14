@@ -101,9 +101,9 @@ void run_command(const char* command){
 int main(int argc, char* argv[]){
 	static struct option long_options[] =
     {
-      {"SCALE", required_argument, 0, 's'},
-      {"PERIOD", required_argument, 0, 'p'},
-      {"LOG", required_argument, 0, 'l'},
+      {"scale", required_argument, 0, 's'},
+      {"period", required_argument, 0, 'p'},
+      {"log", required_argument, 0, 'l'},
       {0, 0, 0, 0}
     };
     int arg; 
